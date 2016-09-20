@@ -1,0 +1,19 @@
+#{{ ansible_managed}}
+
+/var/log/nginx/*.log {
+        daily
+        dateext
+        missingok
+        rotate {{nginx_logroate_rotate_days}}
+        compress
+        delaycompress
+        notifempty
+        create 0640 www-data adm
+        sharedscripts
+        prerotate
+        {{'\t'}}{{nginx_logrotate_prerotate_script}}
+        endscript
+        postrotate
+        {{'\t'}}{{nginx_logrotate_postrotate_script}}
+        endscript
+}

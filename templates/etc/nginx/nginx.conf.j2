@@ -1,0 +1,54 @@
+# {{ ansible_managed }}
+{%if nginx_global_params is defined %}
+{% for key in nginx_global_params %}
+{{ key }} {{ nginx_global_params[key] }};
+{%endfor%}
+{%endif%}
+
+{%if nginx_events_params is defined%}
+events {
+
+{% for key in nginx_events_params %}
+{{'\t'}}{{ key }};
+{%endfor%}
+
+}
+{%endif%}
+
+{%if nginx_http_params is defined %}
+http {
+
+{% for key in nginx_http_params %}
+{%if key != '' %}
+{{'\t'}} {{ key }};
+{%endif%}
+{%endfor%}
+
+}
+{%endif%}
+
+
+{%if nginx_mail_params is defined %}
+mail {
+
+{% for key in nginx_mail_params %}
+{%if key != '' %}
+{{'\t'}} {{ key }};
+{%endif%}
+{%endfor%}
+
+}
+{%endif%}
+
+
+{%if nginx_stream_params is defined %}
+stream {
+
+{% for key in nginx_stream_params %}
+{%if key != '' %}
+{{'\t'}} {{ key }};
+{%endif%}
+{%endfor%}
+
+}
+{%endif%}
