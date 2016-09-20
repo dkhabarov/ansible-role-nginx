@@ -1,2 +1,25 @@
 ---
 
+- name: add repo key
+  apt_key:
+    url: http://nginx.org/keys/nginx_signing.key
+  when: ansible_os_family == "Debian"
+
+- name: add offical deb repo
+  apt_repository:
+    repo: "{{ item }}"
+  with_items:
+  - "deb http://nginx.org/packages/{{ansible_distribution | lower }}/ {{ ansible_distribution_release }} nginx"
+  - "deb-src http://nginx.org/packages/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release}} nginx"
+  when: ansible_os_family == "Debian"
+
+- name: install nginx
+  apt:
+    pkg: nginx
+  when: ansible_os_family == "Debian"
+
+- name: install nginx modules
+  apt:
+    pkg: "{{ item }}"
+  with_items: install_nginx_dynamic_modules
+  when: ansible_os_family == "Debian" and install_nginx_dynamic_modules is defined
