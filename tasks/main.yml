@@ -35,11 +35,12 @@
   apt:
     pkg: "{{ item.name }}"
     state: "{{ item.state }}"
-  with_items: nginx_dynamic_modules
+  with_items:
+    - "{{ nginx_dynamic_modules }}"
   when: ansible_os_family == "Debian" and nginx_dynamic_modules is defined
 
 - name: Assures conf.d dir exists
-  file: 
+  file:
     path: "{{ item.path }}"
     state: directory
     owner: "{{ item.owner | default('root') }}"
@@ -53,20 +54,23 @@
     - {path: "/var/www", owner: www-data, group: www-data, mode: 0755}
 
 - name: Assures additinal dirs exists
-  file: 
+  file:
     path: "{{ item.path }}"
     state: directory
     owner: "{{ item.owner | default('root') }}"
     group: "{{ item.group | default('root') }}"
 #    mode: "{{ item.mode | default(0755) | int }}"
-  with_items: nginx_additinal_dirs
+  with_items:
+    - "{{ nginx_additinal_dirs }}"
 
-- stat: 
+- name: check dh{{nginx_openssl_dh_size}}.pem exists
+  stat:
     path: "/etc/nginx/dh{{nginx_openssl_dh_size}}.pem"
   when: nginx_openssl_dh_size is defined
   register: dh_st
 
-- command: "openssl dhparam -out /etc/nginx/dh{{nginx_openssl_dh_size}}.pem {{nginx_openssl_dh_size}}"
+- name: generate dhparam
+  command: "openssl dhparam -out /etc/nginx/dh{{nginx_openssl_dh_size}}.pem {{nginx_openssl_dh_size}}"
   args:
     creates: "/etc/nginx/dh{{nginx_openssl_dh_size}}.pem"
   when: dh_st is defined not dh_st.stat.exists
