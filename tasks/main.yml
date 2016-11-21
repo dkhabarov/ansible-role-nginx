@@ -73,7 +73,7 @@
   command: "openssl dhparam -out /etc/nginx/dh{{nginx_openssl_dh_size}}.pem {{nginx_openssl_dh_size}}"
   args:
     creates: "/etc/nginx/dh{{nginx_openssl_dh_size}}.pem"
-  when: dh_st is defined not dh_st.stat.exists
+  when: dh_st is defined and not dh_st.stat.exists
 
 - name: install nginx conf
   template:
